@@ -24,22 +24,61 @@ angular.module('starter', ['ionic'])
         $ionicConfigProvider.navBar.alignTitle('center');
     }])
 
-    .controller('ListController', ['$http', '$scope', function ($http, $scope) {
+    .config(function ($stateProvider, $urlRouterProvider) {
+        $stateProvider
+            .state('tabs', {
+                abstract: true,
+                url: '/tab',
+                templateUrl: 'templates/tabs.html'
+            })
+            .state('tabs.list', {
+                url: '/list',
+                views: {
+                    'list-tab': {
+                        templateUrl: 'templates/list.html',
+                        controller: 'ListController as vm'
+                    }
+                }
+            })
+            .state('tabs.detail', {
+                url: '/list/:aId',
+                views: {
+                    'list-tab': {
+                        templateUrl: 'templates/detail.html',
+                        controller: 'ListController as vm'
+                    }
+                }
+            })
+            .state('tabs.home', {
+                url: '/home',
+                views: {
+                    'home-tab': {
+                        templateUrl: 'templates/home.html'
+                    }
+                }
+            });
+
+        $urlRouterProvider.otherwise('/tab/home');
+    })
+
+    .controller('ListController', ['$state', '$http', '$scope', function ($state, $http, $scope) {
         var vm = this;
         $http.get('js/data.json').success(function (res) {
+            vm.data = {showDelete: false, showReorder: false};
             vm.artists = res;
-            vm.onItemDelete = function(item){
+            vm.whichArtist = $state.params.aId;
+            vm.onItemDelete = function (item) {
                 vm.artists.splice(vm.artists.indexOf(item), 1);
             };
-            vm.moveItem = function(item, fromIndex, toIndex){
+            vm.moveItem = function (item, fromIndex, toIndex) {
                 vm.artists.splice(fromIndex, 1);
                 vm.artists.splice(toIndex, 0, item);
             };
-            vm.toggleStar = function(item){
+            vm.toggleStar = function (item) {
                 item.star = !item.star
             };
-            vm.doRefresh = function(){
-                $http.get('js/data.json').success(function(res){
+            vm.doRefresh = function () {
+                $http.get('js/data.json').success(function (res) {
                     vm.artists = res;
                     $scope.$broadcast('scroll.refreshComplete');
                 });

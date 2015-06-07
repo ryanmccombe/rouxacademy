@@ -1,0 +1,12 @@
+<ion-view title="More Info">
+    <ion-content>
+        <ion-list class="list-inset">
+            <ion-item class="item-text-wrap" ng-repeat="item in vm.artists | filter: { shortname: vm.whichArtist }">
+                <img ng-src="img/{{item.shortname}}_tn.jpg" alt="{{item.name}} Photo"/>
+                <h2>{{item.name}}</h2>
+                <h3>{{item.reknown}}</h3>
+                <p>{{item.bio}}</p>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

@@ -1,0 +1,47 @@
+<ion-view title="Artist List">
+
+    <ion-nav-buttons side="primary">
+        <button class="button button-icon ion-minus-circled"
+                ng-click="vm.data.showDelete = !vm.data.showDelete; vm.data.showReorder = false"></button>
+    </ion-nav-buttons>
+
+    <ion-nav-buttons side="secondary">
+        <button class="button button-icon ion-navicon"
+                ng-click="vm.data.showReorder = !vm.data.showReorder; vm.data.showDelete = false"></button>
+    </ion-nav-buttons>
+
+    <div class="bar bar-subheader item-input-inset bar-light">
+        <label class="item-input-wrapper">
+            <i class="icon ion-search placeholder-icon"></i>
+            <input type="search" ng-model="query" placeholder="Search"/>
+        </label>
+    </div>
+
+    <ion-content class="has-subheader" has-bouncing="true">
+        <ion-refresher class="refresher" on-refresh="vm.doRefresh()"></ion-refresher>
+        <ion-list show-reorder="vm.data.showReorder" show-delete="vm.data.showDelete">
+            <ion-item ng-repeat="item in vm.artists | filter: query"
+                      class="item-thumbnail-left item-icon-right item-text-wrap"
+                      ng-class="{'star': item.star}"
+                      href="#/tab/list/{{item.shortname}}">
+                <img ng-src="img/{{item.shortname}}_tn.jpg" alt="{{item.name}} Photo"/>
+
+                <h2>{{item.name}}</h2>
+
+                <h3>{{item.reknown}}</h3>
+
+                <p>
+                    {{item.bio | limitTo: 180}}{{item.bio.length > 180 ? '&hellip;' : ''}}
+                </p>
+                <button class="button button-clear icon ion-star button-assertive"
+                        ng-show="item.star"></button>
+                <ion-option-button class="button-dark" ng-click="vm.toggleStar(item)">
+                    <i class="icon ion-star"></i>
+                </ion-option-button>
+                <ion-delete-button class="ion-minus-circled" ng-click="vm.onItemDelete(item)"></ion-delete-button>
+                <ion-reorder-button class="ion-navicon"
+                                    on-reorder="vm.moveItem(item, $fromIndex, $toIndex)"></ion-reorder-button>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>
